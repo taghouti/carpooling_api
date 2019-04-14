@@ -1,2 +1,0 @@
-composer create-project symfony/skeleton carpooling_api
-composer req server api make

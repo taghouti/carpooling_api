@@ -1,24 +1,59 @@
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
-    providers:
-        in_memory: { memory: ~ }
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            anonymous: true
 
-            # activate different ways to authenticate
+  encoders:
+    App\Entity\User:
+      algorithm: bcrypt
 
-            # http_basic: true
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+  # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+  providers:
+    entity_provider:
+      entity:
+        # the class of the entity that represents users
+        class: 'App\Entity\User'
+        # the property to query by - e.g. username, email, etc
+        property: 'username'
+        # optional: if you're using multiple Doctrine entity
+        # managers, this option defines which one to use
+        # manager_name: 'customer'
 
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    login:
+      pattern:  ^/login
+      stateless: true
+      anonymous: true
+      json_login:
+        check_path: /login_check
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+    register:
+      pattern:  ^/register
+      stateless: true
+      anonymous: true
+    api:
+      pattern:  ^/api
+      stateless: true
+      anonymous: false
+      provider: entity_provider
+      guard:
+        authenticators:
+        - lexik_jwt_authentication.jwt_token_authenticator
+    main:
+      anonymous: true
+      # activate different ways to authenticate
+      # http_basic: true
+      # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+      # form_login: true
+      # https://symfony.com/doc/current/security/form_login_setup.html
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+  # Easy way to control access for large sections of your site
+  # Note: Only the *first* access control that matches will be used
+  access_control:
+  # - { path: ^/admin, roles: ROLE_ADMIN }
+  # - { path: ^/profile, roles: ROLE_USER }
+  - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+  - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+  - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
