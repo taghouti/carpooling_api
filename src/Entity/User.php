@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -46,6 +48,16 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=160, unique=true)
      */
     private $email;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Ride", mappedBy="user_id", orphanRemoval=true)
+     */
+    private $rides;
+
+    public function __construct()
+    {
+        $this->rides = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -130,5 +142,36 @@ class User implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * @return Collection|Ride[]
+     */
+    public function getRides(): Collection
+    {
+        return $this->rides;
+    }
+
+    public function addRide(Ride $ride): self
+    {
+        if (!$this->rides->contains($ride)) {
+            $this->rides[] = $ride;
+            $ride->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRide(Ride $ride): self
+    {
+        if ($this->rides->contains($ride)) {
+            $this->rides->removeElement($ride);
+            // set the owning side to null (unless already changed)
+            if ($ride->getUserId() === $this) {
+                $ride->setUserId(null);
+            }
+        }
+
+        return $this;
     }
 }
