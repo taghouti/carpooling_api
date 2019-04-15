@@ -11,7 +11,10 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * @ApiResource()
+ * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="Sorry, this email address is already in use.", groups={"registration"})
+ * @UniqueEntity(fields="username", message="Sorry, this username is already taken.", groups={"registration"})
  */
 class User implements UserInterface
 {
@@ -23,6 +26,9 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @var string $username
+     * @Assert\NotBlank(groups={"registration"})
+     *
      * @ORM\Column(type="string", length=160, unique=true)
      */
     private $username;
@@ -33,17 +39,13 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @var string $email
+     * @Assert\NotBlank(groups={"registration"})
+     * @Assert\Email(groups={"registration"})
+     *
      * @ORM\Column(type="string", length=160, unique=true)
      */
     private $email;
-
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {
-        $metadata->addConstraint(new UniqueEntity(array(
-            'fields'  => 'email',
-        )));
-        $metadata->addPropertyConstraint('email', new Assert\Email());
-    }
 
     public function getId(): ?int
     {
