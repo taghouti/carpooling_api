@@ -2,48 +2,32 @@
 
 namespace App\Controller;
 
+use App\Service\InputValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AuthController extends AbstractController
 {
-    public function register(Request $request, UserPasswordEncoderInterface $encoder, ValidatorInterface $validator)
+    public function register(InputValidation $validation, Request $request, UserPasswordEncoderInterface $encoder, ValidatorInterface $validator)
     {
-        $username = $request->request->get('_username');
-        $password = $request->request->get('_password');
-        $email = $request->request->get('_email');
+        $validation = $validation->validateRequestData($validator, $request,
+            [
+                'username' => [new Assert\Length(['min' => 4]), new Assert\NotBlank],
+                'password' => [new Assert\Length(['min' => 4]), new Assert\NotBlank],
+                'email' => [new Assert\Email(), new Assert\notBlank]
+            ]
+        );
 
-        $input = [
-            'username' => $username,
-            'password' => $password,
-            'email' => $email
-        ];
+        if ($validation) return $validation;
 
-        $constraints = new Assert\Collection([
-            'username' => [new Assert\Length(['min' => 4]), new Assert\NotBlank],
-            'password' => [new Assert\Length(['min' => 4]), new Assert\NotBlank],
-            'email' => [new Assert\Email(), new Assert\notBlank],
-        ]);
-
-        $violations = $validator->validate($input, $constraints);
-
-        if (count($violations) > 0) {
-            $accessor = PropertyAccess::createPropertyAccessor();
-            $errorMessages = [];
-            foreach ($violations as $violation) {
-                $accessor->setValue($errorMessages,
-                    $violation->getPropertyPath(),
-                    $violation->getMessage());
-            }
-            return new Response(json_encode($errorMessages), Response::HTTP_INTERNAL_SERVER_ERROR,
-                ['content-type' => 'text/plain']);
-        }
+        $username = $request->request->get('username');
+        $password = $request->request->get('password');
+        $email = $request->request->get('email');
 
         $user = new User();
         $user->setPassword($encoder->encodePassword($user, $password));

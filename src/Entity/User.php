@@ -5,6 +5,9 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * @ApiResource()
@@ -33,6 +36,14 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=160, unique=true)
      */
     private $email;
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addConstraint(new UniqueEntity(array(
+            'fields'  => 'email',
+        )));
+        $metadata->addPropertyConstraint('email', new Assert\Email());
+    }
 
     public function getId(): ?int
     {
