@@ -50,7 +50,7 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Ride", mappedBy="user_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Ride", mappedBy="user", orphanRemoval=true)
      */
     private $rides;
 
