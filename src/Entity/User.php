@@ -42,5 +42,12 @@ class User
      */
     private $email;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="picture", type="string", length=256, nullable=false)
+     */
+    private $picture;
+
 
 }
