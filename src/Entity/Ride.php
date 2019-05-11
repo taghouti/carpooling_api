@@ -71,6 +71,13 @@ class Ride
     private $places;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="price", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $price;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="male", type="boolean", nullable=false, options={"default"="1"})
