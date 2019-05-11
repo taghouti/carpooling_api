@@ -2,178 +2,125 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
- * @ORM\Entity(repositoryClass="App\Repository\RideRepository")
+ * Ride
+ *
+ * @ORM\Table(name="ride", indexes={@ORM\Index(name="IDX_9B3D7CD0A76ED395", columns={"user_id"})})
+ * @ORM\Entity
  */
 class Ride
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="date", type="datetime", nullable=true)
      */
     private $date;
 
     /**
-     * @ORM\Column(type="time")
+     * @var \DateTime
+     *
+     * @ORM\Column(name="time", type="time", nullable=false)
      */
     private $time;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string
+     *
+     * @ORM\Column(name="depart", type="string", length=255, nullable=false)
      */
     private $depart;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string
+     *
+     * @ORM\Column(name="destination", type="string", length=255, nullable=false)
      */
     private $destination;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string
+     *
+     * @ORM\Column(name="car_brand", type="string", length=255, nullable=false)
      */
-    private $car_brand;
+    private $carBrand;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string
+     *
+     * @ORM\Column(name="car_color", type="string", length=255, nullable=false)
      */
-    private $car_color;
+    private $carColor;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isFull;
-
-    /**
-     * @ORM\Column(type="integer")
+     * @var int
+     *
+     * @ORM\Column(name="places", type="integer", nullable=false)
      */
     private $places;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="rides")
-     * @ORM\JoinColumn(nullable=false)
+     * @var bool
+     *
+     * @ORM\Column(name="male", type="boolean", nullable=false, options={"default"="1"})
+     */
+    private $male = '1';
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="female", type="boolean", nullable=false, options={"default"="1"})
+     */
+    private $female = '1';
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="smoking", type="boolean", nullable=false)
+     */
+    private $smoking = '0';
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="animals", type="boolean", nullable=false)
+     */
+    private $animals = '0';
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="music", type="boolean", nullable=false, options={"default"="1"})
+     */
+    private $music = '1';
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="air_conditioning", type="boolean", nullable=false)
+     */
+    private $airConditioning = '0';
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
      */
     private $user;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
-    public function getDate(): ?\DateTimeInterface
-    {
-        return $this->date;
-    }
-
-    public function setDate(?\DateTimeInterface $date): self
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
-    public function getTime(): ?\DateTimeInterface
-    {
-        return $this->time;
-    }
-
-    public function setTime(\DateTimeInterface $time): self
-    {
-        $this->time = $time;
-
-        return $this;
-    }
-
-    public function getDepart(): ?string
-    {
-        return $this->depart;
-    }
-
-    public function setDepart(string $depart): self
-    {
-        $this->depart = $depart;
-
-        return $this;
-    }
-
-    public function getDestination(): ?string
-    {
-        return $this->destination;
-    }
-
-    public function setDestination(string $destination): self
-    {
-        $this->destination = $destination;
-
-        return $this;
-    }
-
-    public function getCarBrand(): ?string
-    {
-        return $this->car_brand;
-    }
-
-    public function setCarBrand(string $car_brand): self
-    {
-        $this->car_brand = $car_brand;
-
-        return $this;
-    }
-
-    public function getCarColor(): ?string
-    {
-        return $this->car_color;
-    }
-
-    public function setCarColor(string $car_color): self
-    {
-        $this->car_color = $car_color;
-
-        return $this;
-    }
-
-    public function getIsFull(): ?bool
-    {
-        return $this->isFull;
-    }
-
-    public function setIsFull(bool $isFull): self
-    {
-        $this->isFull = $isFull;
-
-        return $this;
-    }
-
-    public function getPlaces(): ?int
-    {
-        return $this->places;
-    }
-
-    public function setPlaces(int $places): self
-    {
-        $this->places = $places;
-
-        return $this;
-    }
-
-    public function getUserId(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUserId(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
 }
