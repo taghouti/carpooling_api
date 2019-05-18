@@ -49,5 +49,19 @@ class User
      */
     private $picture;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dob", type="date", nullable=false)
+     */
+    private $dob;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phone", type="string", length=256, nullable=false)
+     */
+    private $phone;
+
 
 }
