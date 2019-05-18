@@ -24,6 +24,20 @@ class User
     /**
      * @var string
      *
+     * @ORM\Column(name="first_name", type="string", length=256, nullable=false)
+     */
+    private $firstName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="last_name", type="string", length=256, nullable=false)
+     */
+    private $lastName;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="username", type="string", length=160, nullable=false)
      */
     private $username;
